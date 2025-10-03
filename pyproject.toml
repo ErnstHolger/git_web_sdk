@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pi-web-sdk"
-version = "0.1.6"
+version = "0.1.7"
 description = "Python client SDK for the AVEVA PI Web API with typed controllers and request helpers"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.9"
