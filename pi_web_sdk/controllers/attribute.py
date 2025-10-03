@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Dict, Optional, Union
 
 from .base import BaseController
@@ -53,15 +54,16 @@ class AttributeController(BaseController):
         self,
         web_id: str,
         selected_fields: Optional[str] = None,
-        time: Optional[str] = None,
+        time: Union[str, datetime, None] = None,
         desired_units: Optional[str] = None,
     ) -> Dict:
         """Get attribute value."""
         params = {}
         if selected_fields:
             params["selectedFields"] = selected_fields
-        if time:
-            params["time"] = time
+        time_str = self._format_time(time)
+        if time_str:
+            params["time"] = time_str
         if desired_units:
             params["desiredUnits"] = desired_units
         return self.client.get(f"attributes/{web_id}/value", params=params)

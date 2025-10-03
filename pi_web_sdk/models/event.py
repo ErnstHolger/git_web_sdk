@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, Any, Optional, List
+from datetime import datetime
+from typing import Dict, Any, Optional, List, Union
 from .base import PIWebAPIObject
 
 
@@ -16,13 +17,13 @@ __all__ = [
 @dataclass
 class EventFrame(PIWebAPIObject):
     """PI AF Event Frame object."""
-    
-    acknowledge_date: Optional[str] = None
+
+    acknowledge_date: Union[str, datetime, None] = None
     acknowledged_by: Optional[str] = None
     are_values_captured: Optional[bool] = None
     can_be_acknowledged: Optional[bool] = None
     category_names: Optional[List[str]] = None
-    end_time: Optional[str] = None
+    end_time: Union[str, datetime, None] = None
     has_children: Optional[bool] = None
     is_acknowledged: Optional[bool] = None
     is_annotation: Optional[bool] = None
@@ -30,15 +31,25 @@ class EventFrame(PIWebAPIObject):
     referenced_element_web_id: Optional[str] = None
     security_descriptor: Optional[str] = None
     severity: Optional[str] = None
-    start_time: Optional[str] = None
+    start_time: Union[str, datetime, None] = None
     template_name: Optional[str] = None
     
+    def _format_time(self, time_value: Union[str, datetime, None]) -> Optional[str]:
+        """Convert time value to PI Web API compatible string format."""
+        if time_value is None:
+            return None
+        if isinstance(time_value, str):
+            return time_value
+        if isinstance(time_value, datetime):
+            return time_value.isoformat()
+        raise TypeError(f"Time value must be str, datetime, or None, got {type(time_value)}")
+
     def to_dict(self, exclude_none: bool = True) -> Dict[str, Any]:
         """Convert to PI Web API format."""
         result = super().to_dict(exclude_none)
-        
+
         if self.acknowledge_date is not None or not exclude_none:
-            result['AcknowledgeDate'] = self.acknowledge_date
+            result['AcknowledgeDate'] = self._format_time(self.acknowledge_date)
         if self.acknowledged_by is not None or not exclude_none:
             result['AcknowledgedBy'] = self.acknowledged_by
         if self.are_values_captured is not None or not exclude_none:
@@ -48,7 +59,7 @@ class EventFrame(PIWebAPIObject):
         if self.category_names is not None or not exclude_none:
             result['CategoryNames'] = self.category_names
         if self.end_time is not None or not exclude_none:
-            result['EndTime'] = self.end_time
+            result['EndTime'] = self._format_time(self.end_time)
         if self.has_children is not None or not exclude_none:
             result['HasChildren'] = self.has_children
         if self.is_acknowledged is not None or not exclude_none:
@@ -64,10 +75,10 @@ class EventFrame(PIWebAPIObject):
         if self.severity is not None or not exclude_none:
             result['Severity'] = self.severity
         if self.start_time is not None or not exclude_none:
-            result['StartTime'] = self.start_time
+            result['StartTime'] = self._format_time(self.start_time)
         if self.template_name is not None or not exclude_none:
             result['TemplateName'] = self.template_name
-            
+
         return result
     
     @classmethod

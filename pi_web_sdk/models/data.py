@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, Any, Optional
+from datetime import datetime
+from typing import Dict, Any, Optional, Union
 from .base import PIWebAPIObject
 
 
@@ -157,20 +158,30 @@ class TimedValue:
 @dataclass
 class StreamValue:
     """Stream value object."""
-    
+
     value: Any
-    timestamp: Optional[str] = None
+    timestamp: Union[str, datetime, None] = None
     units_abbreviation: Optional[str] = None
     good: Optional[bool] = None
     questionable: Optional[bool] = None
     substituted: Optional[bool] = None
-    
+
+    def _format_time(self, time_value: Union[str, datetime, None]) -> Optional[str]:
+        """Convert time value to PI Web API compatible string format."""
+        if time_value is None:
+            return None
+        if isinstance(time_value, str):
+            return time_value
+        if isinstance(time_value, datetime):
+            return time_value.isoformat()
+        raise TypeError(f"Time value must be str, datetime, or None, got {type(time_value)}")
+
     def to_dict(self, exclude_none: bool = True) -> Dict[str, Any]:
         """Convert to PI Web API format."""
         result = {'Value': self.value}
-        
+
         if self.timestamp is not None or not exclude_none:
-            result['Timestamp'] = self.timestamp
+            result['Timestamp'] = self._format_time(self.timestamp)
         if self.units_abbreviation is not None or not exclude_none:
             result['UnitsAbbreviation'] = self.units_abbreviation
         if self.good is not None or not exclude_none:
@@ -179,7 +190,7 @@ class StreamValue:
             result['Questionable'] = self.questionable
         if self.substituted is not None or not exclude_none:
             result['Substituted'] = self.substituted
-            
+
         return result
     
     @classmethod

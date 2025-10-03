@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Dict, Optional
+from datetime import datetime
+from typing import Dict, Optional, Union
 
 from .base import BaseController
 
@@ -24,16 +25,18 @@ class MetricsController(BaseController):
 
     def requests(
         self,
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None,
+        start_time: Union[str, datetime, None] = None,
+        end_time: Union[str, datetime, None] = None,
         interval: Optional[str] = None,
     ) -> Dict:
         """Get request metrics."""
         params = {}
-        if start_time:
-            params["startTime"] = start_time
-        if end_time:
-            params["endTime"] = end_time
+        start_time_str = self._format_time(start_time)
+        if start_time_str:
+            params["startTime"] = start_time_str
+        end_time_str = self._format_time(end_time)
+        if end_time_str:
+            params["endTime"] = end_time_str
         if interval:
             params["interval"] = interval
         return self.client.get("metrics/requests", params=params)

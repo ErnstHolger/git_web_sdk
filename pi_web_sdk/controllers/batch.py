@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional
+from datetime import datetime
+from typing import Dict, List, Optional, Union
 
 from .base import BaseController
 
@@ -29,21 +30,21 @@ class BatchController(BaseController):
         return self.client.post("batch", data=requests)
 
     def replace_time_range_values(
-        self, point_webid: str, start_time: str, end_time: str, new_values: List[Dict]
+        self, point_webid: str, start_time: Union[str, datetime], end_time: Union[str, datetime], new_values: List[Dict]
     ) -> Dict:
         """Delete all values in a time range and write new ones.
 
         Args:
             point_webid: WebID of the point
-            start_time: Start of time range (e.g., "2024-01-01T00:00:00Z")
-            end_time: End of time range (e.g., "2024-01-01T23:59:59Z")
+            start_time: Start of time range (string or datetime object)
+            end_time: End of time range (string or datetime object)
             new_values: List of value dicts with Timestamp, Value, etc.
         """
         # First, get existing values in the time range
         existing_data = self.client.stream.get_recorded(
             web_id=point_webid,
-            start_time=start_time,
-            end_time=end_time,
+            start_time=self._format_time(start_time),
+            end_time=self._format_time(end_time),
             max_count=10_000,  # Adjust as needed
         )
 

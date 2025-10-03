@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Dict, Optional, Union
 
 from .base import BaseController
@@ -69,8 +70,8 @@ class EventFrameController(BaseController):
         name_filter: Optional[str] = None,
         category_name: Optional[str] = None,
         template_name: Optional[str] = None,
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None,
+        start_time: Union[str, datetime, None] = None,
+        end_time: Union[str, datetime, None] = None,
         search_full_hierarchy: bool = False,
         sort_field: Optional[str] = None,
         sort_order: Optional[str] = None,
@@ -90,10 +91,12 @@ class EventFrameController(BaseController):
             params['categoryName'] = category_name
         if template_name:
             params['templateName'] = template_name
-        if start_time:
-            params['startTime'] = start_time
-        if end_time:
-            params['endTime'] = end_time
+        start_time_str = self._format_time(start_time)
+        if start_time_str:
+            params['startTime'] = start_time_str
+        end_time_str = self._format_time(end_time)
+        if end_time_str:
+            params['endTime'] = end_time_str
         if sort_field:
             params['sortField'] = sort_field
         if sort_order:
@@ -238,7 +241,7 @@ class EventFrameController(BaseController):
         attribute_description_filter: Optional[str] = None,
         attribute_name_filter: Optional[str] = None,
         attribute_type: Optional[str] = None,
-        end_time: Optional[str] = None,
+        end_time: Union[str, datetime, None] = None,
         event_frame_category: Optional[str] = None,
         event_frame_description_filter: Optional[str] = None,
         event_frame_name_filter: Optional[str] = None,
@@ -251,7 +254,7 @@ class EventFrameController(BaseController):
         sort_field: Optional[str] = None,
         sort_order: Optional[str] = None,
         start_index: int = 0,
-        start_time: Optional[str] = None,
+        start_time: Union[str, datetime, None] = None,
     ) -> Dict:
         """Search for event frame attributes by various criteria."""
         params: Dict[str, object] = {
@@ -267,8 +270,9 @@ class EventFrameController(BaseController):
             params['attributeNameFilter'] = attribute_name_filter
         if attribute_type:
             params['attributeType'] = attribute_type
-        if end_time:
-            params['endTime'] = end_time
+        end_time_str = self._format_time(end_time)
+        if end_time_str:
+            params['endTime'] = end_time_str
         if event_frame_category:
             params['eventFrameCategory'] = event_frame_category
         if event_frame_description_filter:
@@ -285,8 +289,9 @@ class EventFrameController(BaseController):
             params['sortField'] = sort_field
         if sort_order:
             params['sortOrder'] = sort_order
-        if start_time:
-            params['startTime'] = start_time
+        start_time_str = self._format_time(start_time)
+        if start_time_str:
+            params['startTime'] = start_time_str
         if selected_fields:
             params['selectedFields'] = selected_fields
         return self.client.get(

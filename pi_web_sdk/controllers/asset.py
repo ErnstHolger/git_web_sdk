@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Dict, Optional, Union
 
 from .base import BaseController
@@ -459,7 +460,7 @@ class ElementController(BaseController):
         web_id: str,
         can_be_acknowledged: Optional[bool] = None,
         category_name: Optional[str] = None,
-        end_time: Optional[str] = None,
+        end_time: Union[str, datetime, None] = None,
         is_acknowledged: Optional[bool] = None,
         name_filter: Optional[str] = None,
         referenced_element_name_filter: Optional[str] = None,
@@ -470,7 +471,7 @@ class ElementController(BaseController):
         sort_field: Optional[str] = None,
         sort_order: Optional[str] = None,
         start_index: int = 0,
-        start_time: Optional[str] = None,
+        start_time: Union[str, datetime, None] = None,
         max_count: int = 1000,
         template_name: Optional[str] = None,
     ) -> Dict:
@@ -484,8 +485,9 @@ class ElementController(BaseController):
             params["canBeAcknowledged"] = can_be_acknowledged
         if category_name:
             params["categoryName"] = category_name
-        if end_time:
-            params["endTime"] = end_time
+        end_time_str = self._format_time(end_time)
+        if end_time_str:
+            params["endTime"] = end_time_str
         if is_acknowledged is not None:
             params["isAcknowledged"] = is_acknowledged
         if name_filter:
@@ -500,8 +502,9 @@ class ElementController(BaseController):
             params["sortField"] = sort_field
         if sort_order:
             params["sortOrder"] = sort_order
-        if start_time:
-            params["startTime"] = start_time
+        start_time_str = self._format_time(start_time)
+        if start_time_str:
+            params["startTime"] = start_time_str
         if template_name:
             params["templateName"] = template_name
         if selected_fields:

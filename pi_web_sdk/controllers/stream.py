@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional
+from datetime import datetime
+from typing import Dict, List, Optional, Union
 
 from .base import BaseController
 
@@ -18,15 +19,16 @@ class StreamController(BaseController):
         self,
         web_id: str,
         selected_fields: Optional[str] = None,
-        time: Optional[str] = None,
+        time: Union[str, datetime, None] = None,
         desired_units: Optional[str] = None,
     ) -> Dict:
         """Get current stream value."""
         params = {}
         if selected_fields:
             params["selectedFields"] = selected_fields
-        if time:
-            params["time"] = time
+        time_str = self._format_time(time)
+        if time_str:
+            params["time"] = time_str
         if desired_units:
             params["desiredUnits"] = desired_units
         return self.client.get(f"streams/{web_id}/value", params=params)
@@ -34,8 +36,8 @@ class StreamController(BaseController):
     def get_recorded(
         self,
         web_id: str,
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None,
+        start_time: Union[str, datetime, None] = None,
+        end_time: Union[str, datetime, None] = None,
         boundary_type: Optional[str] = None,
         max_count: Optional[int] = None,
         include_filtered_values: bool = False,
@@ -46,10 +48,12 @@ class StreamController(BaseController):
     ) -> Dict:
         """Get recorded values."""
         params = {"includeFilteredValues": include_filtered_values}
-        if start_time:
-            params["startTime"] = start_time
-        if end_time:
-            params["endTime"] = end_time
+        start_time_str = self._format_time(start_time)
+        if start_time_str:
+            params["startTime"] = start_time_str
+        end_time_str = self._format_time(end_time)
+        if end_time_str:
+            params["endTime"] = end_time_str
         if boundary_type:
             params["boundaryType"] = boundary_type
         if max_count:
@@ -68,23 +72,25 @@ class StreamController(BaseController):
     def get_interpolated(
         self,
         web_id: str,
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None,
+        start_time: Union[str, datetime, None] = None,
+        end_time: Union[str, datetime, None] = None,
         interval: Optional[str] = None,
         filter_expression: Optional[str] = None,
         include_filtered_values: bool = False,
         selected_fields: Optional[str] = None,
         time_zone: Optional[str] = None,
         desired_units: Optional[str] = None,
-        sync_time: Optional[str] = None,
+        sync_time: Union[str, datetime, None] = None,
         sync_time_boundary_type: Optional[str] = None,
     ) -> Dict:
         """Get interpolated values."""
         params = {"includeFilteredValues": include_filtered_values}
-        if start_time:
-            params["startTime"] = start_time
-        if end_time:
-            params["endTime"] = end_time
+        start_time_str = self._format_time(start_time)
+        if start_time_str:
+            params["startTime"] = start_time_str
+        end_time_str = self._format_time(end_time)
+        if end_time_str:
+            params["endTime"] = end_time_str
         if interval:
             params["interval"] = interval
         if filter_expression:
@@ -95,8 +101,9 @@ class StreamController(BaseController):
             params["timeZone"] = time_zone
         if desired_units:
             params["desiredUnits"] = desired_units
-        if sync_time:
-            params["syncTime"] = sync_time
+        sync_time_str = self._format_time(sync_time)
+        if sync_time_str:
+            params["syncTime"] = sync_time_str
         if sync_time_boundary_type:
             params["syncTimeBoundaryType"] = sync_time_boundary_type
 
@@ -105,8 +112,8 @@ class StreamController(BaseController):
     def get_plot(
         self,
         web_id: str,
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None,
+        start_time: Union[str, datetime, None] = None,
+        end_time: Union[str, datetime, None] = None,
         intervals: Optional[int] = None,
         selected_fields: Optional[str] = None,
         time_zone: Optional[str] = None,
@@ -114,10 +121,12 @@ class StreamController(BaseController):
     ) -> Dict:
         """Get plot values."""
         params = {}
-        if start_time:
-            params["startTime"] = start_time
-        if end_time:
-            params["endTime"] = end_time
+        start_time_str = self._format_time(start_time)
+        if start_time_str:
+            params["startTime"] = start_time_str
+        end_time_str = self._format_time(end_time)
+        if end_time_str:
+            params["endTime"] = end_time_str
         if intervals:
             params["intervals"] = intervals
         if selected_fields:
@@ -132,8 +141,8 @@ class StreamController(BaseController):
     def get_summary(
         self,
         web_id: str,
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None,
+        start_time: Union[str, datetime, None] = None,
+        end_time: Union[str, datetime, None] = None,
         summary_type: Optional[List[str]] = None,
         summary_duration: Optional[str] = None,
         calculation_basis: Optional[str] = None,
@@ -144,10 +153,12 @@ class StreamController(BaseController):
     ) -> Dict:
         """Get summary values."""
         params = {}
-        if start_time:
-            params["startTime"] = start_time
-        if end_time:
-            params["endTime"] = end_time
+        start_time_str = self._format_time(start_time)
+        if start_time_str:
+            params["startTime"] = start_time_str
+        end_time_str = self._format_time(end_time)
+        if end_time_str:
+            params["endTime"] = end_time_str
         if summary_type:
             params["summaryType"] = summary_type
         if summary_duration:
@@ -251,15 +262,16 @@ class StreamSetController(BaseController):
         self,
         web_ids: List[str],
         selected_fields: Optional[str] = None,
-        time: Optional[str] = None,
+        time: Union[str, datetime, None] = None,
         desired_units: Optional[str] = None,
     ) -> Dict:
         """Get current values for multiple streams."""
         params = {"webId": web_ids}
         if selected_fields:
             params["selectedFields"] = selected_fields
-        if time:
-            params["time"] = time
+        time_str = self._format_time(time)
+        if time_str:
+            params["time"] = time_str
         if desired_units:
             params["desiredUnits"] = desired_units
         return self.client.get("streamsets/value", params=params)
@@ -267,8 +279,8 @@ class StreamSetController(BaseController):
     def get_recorded(
         self,
         web_ids: List[str],
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None,
+        start_time: Union[str, datetime, None] = None,
+        end_time: Union[str, datetime, None] = None,
         boundary_type: Optional[str] = None,
         max_count: Optional[int] = None,
         include_filtered_values: bool = False,
@@ -279,10 +291,12 @@ class StreamSetController(BaseController):
     ) -> Dict:
         """Get recorded values for multiple streams."""
         params = {"webId": web_ids, "includeFilteredValues": include_filtered_values}
-        if start_time:
-            params["startTime"] = start_time
-        if end_time:
-            params["endTime"] = end_time
+        start_time_str = self._format_time(start_time)
+        if start_time_str:
+            params["startTime"] = start_time_str
+        end_time_str = self._format_time(end_time)
+        if end_time_str:
+            params["endTime"] = end_time_str
         if boundary_type:
             params["boundaryType"] = boundary_type
         if max_count:
@@ -301,23 +315,25 @@ class StreamSetController(BaseController):
     def get_interpolated(
         self,
         web_ids: List[str],
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None,
+        start_time: Union[str, datetime, None] = None,
+        end_time: Union[str, datetime, None] = None,
         interval: Optional[str] = None,
         filter_expression: Optional[str] = None,
         include_filtered_values: bool = False,
         selected_fields: Optional[str] = None,
         time_zone: Optional[str] = None,
         desired_units: Optional[str] = None,
-        sync_time: Optional[str] = None,
+        sync_time: Union[str, datetime, None] = None,
         sync_time_boundary_type: Optional[str] = None,
     ) -> Dict:
         """Get interpolated values for multiple streams."""
         params = {"webId": web_ids, "includeFilteredValues": include_filtered_values}
-        if start_time:
-            params["startTime"] = start_time
-        if end_time:
-            params["endTime"] = end_time
+        start_time_str = self._format_time(start_time)
+        if start_time_str:
+            params["startTime"] = start_time_str
+        end_time_str = self._format_time(end_time)
+        if end_time_str:
+            params["endTime"] = end_time_str
         if interval:
             params["interval"] = interval
         if filter_expression:
@@ -328,8 +344,9 @@ class StreamSetController(BaseController):
             params["timeZone"] = time_zone
         if desired_units:
             params["desiredUnits"] = desired_units
-        if sync_time:
-            params["syncTime"] = sync_time
+        sync_time_str = self._format_time(sync_time)
+        if sync_time_str:
+            params["syncTime"] = sync_time_str
         if sync_time_boundary_type:
             params["syncTimeBoundaryType"] = sync_time_boundary_type
 
@@ -338,8 +355,8 @@ class StreamSetController(BaseController):
     def get_plot(
         self,
         web_ids: List[str],
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None,
+        start_time: Union[str, datetime, None] = None,
+        end_time: Union[str, datetime, None] = None,
         intervals: Optional[int] = None,
         selected_fields: Optional[str] = None,
         time_zone: Optional[str] = None,
@@ -347,10 +364,12 @@ class StreamSetController(BaseController):
     ) -> Dict:
         """Get plot values for multiple streams."""
         params = {"webId": web_ids}
-        if start_time:
-            params["startTime"] = start_time
-        if end_time:
-            params["endTime"] = end_time
+        start_time_str = self._format_time(start_time)
+        if start_time_str:
+            params["startTime"] = start_time_str
+        end_time_str = self._format_time(end_time)
+        if end_time_str:
+            params["endTime"] = end_time_str
         if intervals:
             params["intervals"] = intervals
         if selected_fields:
@@ -365,8 +384,8 @@ class StreamSetController(BaseController):
     def get_summaries(
         self,
         web_ids: List[str],
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None,
+        start_time: Union[str, datetime, None] = None,
+        end_time: Union[str, datetime, None] = None,
         summary_type: Optional[List[str]] = None,
         summary_duration: Optional[str] = None,
         calculation_basis: Optional[str] = None,
@@ -377,10 +396,12 @@ class StreamSetController(BaseController):
     ) -> Dict:
         """Get summary values for multiple streams."""
         params = {"webId": web_ids}
-        if start_time:
-            params["startTime"] = start_time
-        if end_time:
-            params["endTime"] = end_time
+        start_time_str = self._format_time(start_time)
+        if start_time_str:
+            params["startTime"] = start_time_str
+        end_time_str = self._format_time(end_time)
+        if end_time_str:
+            params["endTime"] = end_time_str
         if summary_type:
             params["summaryType"] = summary_type
         if summary_duration:
