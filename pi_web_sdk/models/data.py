@@ -173,7 +173,11 @@ class StreamValue:
         if isinstance(time_value, str):
             return time_value
         if isinstance(time_value, datetime):
-            return time_value.isoformat()
+            time_str = time_value.isoformat()
+            # Convert +00:00 to Z for better PI Web API compatibility
+            if time_str.endswith('+00:00'):
+                time_str = time_str[:-6] + 'Z'
+            return time_str
         raise TypeError(f"Time value must be str, datetime, or None, got {type(time_value)}")
 
     def to_dict(self, exclude_none: bool = True) -> Dict[str, Any]:
