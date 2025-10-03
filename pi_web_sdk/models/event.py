@@ -33,6 +33,7 @@ class EventFrame(PIWebAPIObject):
     severity: Optional[str] = None
     start_time: Union[str, datetime, None] = None
     template_name: Optional[str] = None
+    attributes: Optional[Dict[str, Any]] = None
     
     def _format_time(self, time_value: Union[str, datetime, None]) -> Optional[str]:
         """Convert time value to PI Web API compatible string format."""
@@ -82,6 +83,8 @@ class EventFrame(PIWebAPIObject):
             result['StartTime'] = self._format_time(self.start_time)
         if self.template_name is not None or not exclude_none:
             result['TemplateName'] = self.template_name
+        if self.attributes is not None or not exclude_none:
+            result['Attributes'] = self.attributes
 
         return result
     
@@ -111,6 +114,7 @@ class EventFrame(PIWebAPIObject):
             severity=data.get('Severity'),
             start_time=data.get('StartTime'),
             template_name=data.get('TemplateName'),
+            attributes=data.get('Attributes'),
         )
 
 
