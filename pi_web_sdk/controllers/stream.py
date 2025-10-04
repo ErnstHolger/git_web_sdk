@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from enum import Enum
 from typing import Dict, List, Optional, Union
 
 from .base import BaseController
@@ -10,7 +11,34 @@ from .base import BaseController
 __all__ = [
     'StreamController',
     'StreamSetController',
+    'BufferOption',
+    'UpdateOption',
 ]
+
+
+class BufferOption(Enum):
+    """Buffer options for value updates.
+
+    Indicates how to buffer value updates when writing to PI points or attributes.
+    """
+    DO_NOT_BUFFER = "DoNotBuffer"  # Update values without buffering
+    BUFFER_IF_POSSIBLE = "BufferIfPossible"  # Attempt buffering, fallback to no buffer if fails
+    BUFFER = "Buffer"  # Update values with buffering
+
+
+class UpdateOption(Enum):
+    """Update options for handling duplicate values.
+
+    Indicates how to treat duplicate values when supported by the data reference.
+    Client applications are responsible for understanding how these options interact
+    with their attributes' data reference.
+    """
+    REPLACE = "Replace"  # Add the value, overwriting if exists at specified time (default)
+    INSERT = "Insert"  # Add the value, preserving any existing values at specified time
+    NO_REPLACE = "NoReplace"  # Add only if no value exists at specified time
+    REPLACE_ONLY = "ReplaceOnly"  # Overwrite if exists, ignore if doesn't exist
+    INSERT_NO_COMPRESSION = "InsertNoCompression"  # Insert without compression
+    REMOVE = "Remove"  # Remove the value if one exists at specified time
 
 class StreamController(BaseController):
     """Controller for Stream operations."""
@@ -180,30 +208,50 @@ class StreamController(BaseController):
         self,
         web_id: str,
         value: Dict,
-        buffer_option: Optional[str] = None,
-        update_option: Optional[str] = None,
+        buffer_option: Optional[Union[str, BufferOption]] = None,
+        update_option: Optional[Union[str, UpdateOption]] = None,
     ) -> Dict:
-        """Update stream value."""
+        """Update stream value.
+
+        Args:
+            web_id: WebID of the stream
+            value: Dictionary with 'Value' and optional 'Timestamp' keys
+            buffer_option: How to buffer the update (DoNotBuffer, BufferIfPossible, Buffer)
+            update_option: How to handle duplicates (Replace, Insert, NoReplace, ReplaceOnly, InsertNoCompression, Remove)
+
+        Returns:
+            Response dictionary
+        """
         params = {}
         if buffer_option:
-            params["bufferOption"] = buffer_option
+            params["bufferOption"] = buffer_option.value if isinstance(buffer_option, BufferOption) else buffer_option
         if update_option:
-            params["updateOption"] = update_option
+            params["updateOption"] = update_option.value if isinstance(update_option, UpdateOption) else update_option
         return self.client.put(f"streams/{web_id}/value", data=value, params=params)
 
     def update_values(
         self,
         web_id: str,
         values: List[Dict],
-        buffer_option: Optional[str] = None,
-        update_option: Optional[str] = None,
+        buffer_option: Optional[Union[str, BufferOption]] = None,
+        update_option: Optional[Union[str, UpdateOption]] = None,
     ) -> Dict:
-        """Update multiple stream values."""
+        """Update multiple stream values.
+
+        Args:
+            web_id: WebID of the stream
+            values: List of dictionaries with 'Value' and 'Timestamp' keys
+            buffer_option: How to buffer the updates (DoNotBuffer, BufferIfPossible, Buffer)
+            update_option: How to handle duplicates (Replace, Insert, NoReplace, ReplaceOnly, InsertNoCompression, Remove)
+
+        Returns:
+            Response dictionary
+        """
         params = {}
         if buffer_option:
-            params["bufferOption"] = buffer_option
+            params["bufferOption"] = buffer_option.value if isinstance(buffer_option, BufferOption) else buffer_option
         if update_option:
-            params["updateOption"] = update_option
+            params["updateOption"] = update_option.value if isinstance(update_option, UpdateOption) else update_option
         return self.client.post(f"streams/{web_id}/recorded", data=values, params=params)
 
     def register_update(

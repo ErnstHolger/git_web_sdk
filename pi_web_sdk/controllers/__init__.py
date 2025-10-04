@@ -52,6 +52,8 @@ from .event import EventFrameController
 from .stream import (
     StreamController,
     StreamSetController,
+    BufferOption,
+    UpdateOption,
 )
 
 from .table import TableController, TableCategoryController
@@ -110,6 +112,8 @@ __all__ = [
     'EventFrameController',
     'StreamController',
     'StreamSetController',
+    'BufferOption',
+    'UpdateOption',
     'TableController',
     'TableCategoryController',
     'OmfController',
