@@ -12,11 +12,12 @@ This example shows how to use the dataclass-based ORM system for OMF operations:
 import time
 from datetime import datetime, timezone
 from pi_web_sdk import PIWebAPIClient, AuthenticationMethod
-from pi_web_sdk.omf import (
-    OMFManager, OMFType, OMFProperty, OMFContainer, OMFAsset,
+from pi_web_sdk.models.omf import (
+    OMFType, OMFProperty, OMFContainer, OMFAsset,
     OMFTimeSeriesData, OMFBatch, Classification, PropertyType,
     create_temperature_sensor_type, create_equipment_asset_type
 )
+from pi_web_sdk.controllers.omf import OMFManager
 
 # Configure client
 client = PIWebAPIClient(

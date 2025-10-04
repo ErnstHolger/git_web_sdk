@@ -1,7 +1,8 @@
 """Example: Creating element hierarchies in PI using OMF."""
 
 from pi_web_sdk import PIWebAPIClient, PIWebAPIConfig
-from pi_web_sdk.omf import OMFManager, create_hierarchy_from_paths, create_industrial_hierarchy
+from pi_web_sdk.models.omf import create_hierarchy_from_paths, create_industrial_hierarchy
+from pi_web_sdk.controllers.omf import OMFManager
 import time
 
 # Configure client

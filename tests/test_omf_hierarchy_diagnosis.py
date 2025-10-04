@@ -2,7 +2,7 @@
 
 import pytest
 import time
-from pi_web_sdk.omf import OMFManager
+from pi_web_sdk.models.omf import OMFManager
 
 
 def test_diagnose_omf_element_names(pi_web_api_client):

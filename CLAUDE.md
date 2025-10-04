@@ -29,9 +29,8 @@ Controllers are organized by domain in `pi_web_sdk/controllers/`:
 - `event.py` - EventFrameController
 
 **OMF Support**
-- `omf.py` - OmfController for OSIsoft Message Format endpoints
-- `pi_web_sdk/omf/orm.py` - ORM-style classes for OMF (OMFType, OMFContainer, OMFAsset, OMFTimeSeriesData, OMFManager)
-- `pi_web_sdk/omf/hierarchy.py` - Hierarchy builder utilities (OMFHierarchyNode, OMFHierarchy)
+- `omf.py` - OmfController for OSIsoft Message Format endpoints, OMFManager for high-level OMF operations
+- `pi_web_sdk/models/omf.py` - OMF data models (OMFType, OMFContainer, OMFAsset, OMFTimeSeriesData, OMFBatch, OMFHierarchy, OMFHierarchyNode)
 
 **Other Resources**
 - `batch.py` - BatchController, CalculationController, ChannelController
@@ -145,7 +144,8 @@ Standard naming for CRUD operations:
 
 **OMF ORM Usage**
 ```python
-from pi_web_sdk.omf import OMFManager, OMFType, OMFContainer, OMFAsset
+from pi_web_sdk.models.omf import OMFType, OMFContainer, OMFAsset
+from pi_web_sdk.controllers.omf import OMFManager
 
 # Define type
 type_def = OMFType(
@@ -173,7 +173,8 @@ manager.create_asset(asset)
 
 **OMF Hierarchy Usage**
 ```python
-from pi_web_sdk.omf.hierarchy import create_industrial_hierarchy
+from pi_web_sdk.models.omf import create_industrial_hierarchy
+from pi_web_sdk.controllers.omf import OMFManager
 
 # Build hierarchy from paths
 hierarchy = create_industrial_hierarchy([

@@ -20,7 +20,7 @@ from typing import Dict, List
 
 from pi_web_sdk import AuthMethod, PIWebAPIClient, PIWebAPIConfig, WebIDType
 from pi_web_sdk.exceptions import PIWebAPIError
-from pi_web_sdk.omf import (
+from pi_web_sdk.models.omf import (
     OMFManager,
     OMFType,
     OMFProperty,

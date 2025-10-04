@@ -2,7 +2,7 @@
 
 import pytest
 import time
-from pi_web_sdk.omf import (
+from pi_web_sdk.models.omf import (
     OMFManager, OMFHierarchy, create_hierarchy_from_paths
 )
 
@@ -120,7 +120,7 @@ class TestOMFHierarchyLive:
     
     def test_industrial_hierarchy_live(self, pi_web_api_client):
         """Test creating an industrial-style hierarchy."""
-        from pi_web_sdk.omf import create_industrial_hierarchy
+        from pi_web_sdk.models.omf import create_industrial_hierarchy
         
         servers = pi_web_api_client.data_server.list()
         assert servers["Items"], "No data servers found"

@@ -1,10 +1,11 @@
 """Tests for OMF hierarchy creation functionality."""
 
 import pytest
-from pi_web_sdk.omf import (
-    OMFHierarchy, OMFHierarchyNode, OMFManager,
+from pi_web_sdk.models.omf import (
+    OMFHierarchy, OMFHierarchyNode,
     create_hierarchy_node_type, create_hierarchy_from_paths, create_industrial_hierarchy
 )
+from pi_web_sdk.controllers.omf import OMFManager
 
 
 class TestOMFHierarchyNode:
@@ -407,12 +408,13 @@ class TestOMFManagerHierarchy:
     def test_create_hierarchy_from_paths_with_manager(self, mock_omf_manager):
         """Test creating hierarchy from paths using manager."""
         paths = ["Plant1/Unit1/Sensor1", "Plant1/Unit2/Sensor2"]
-        
+
         results = mock_omf_manager.create_hierarchy_from_paths(
             paths=paths,
             root_type_id="ContainerType",
             leaf_type_id="SensorType",
-            create_types=False
+            create_types=False,
+            use_af_elements=False  # Use OMF assets instead of AF elements for mock
         )
         
         assert isinstance(results, dict)
@@ -425,7 +427,8 @@ class TestOMFManagerHierarchy:
             plants=["PlantA"],
             units_per_plant={"PlantA": ["Unit1"]},
             sensors_per_unit={"Unit1": ["Sensor1"]},
-            create_types=False
+            create_types=False,
+            use_af_elements=False  # Use OMF assets instead of AF elements for mock
         )
         
         assert isinstance(results, dict)

@@ -56,7 +56,7 @@ from .stream import (
 
 from .table import TableController, TableCategoryController
 
-from .omf import OmfController
+from .omf import OmfController, OMFManager
 
 from .security import (
     SecurityIdentityController,
@@ -113,6 +113,7 @@ __all__ = [
     'TableController',
     'TableCategoryController',
     'OmfController',
+    'OMFManager',
     'SecurityIdentityController',
     'SecurityMappingController',
     'NotificationContactTemplateController',

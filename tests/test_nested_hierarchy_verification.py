@@ -2,7 +2,7 @@
 
 import pytest
 import time
-from pi_web_sdk.omf import OMFManager
+from pi_web_sdk.models.omf import OMFManager
 
 
 @pytest.mark.integration

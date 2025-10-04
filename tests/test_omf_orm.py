@@ -2,11 +2,12 @@
 
 import pytest
 from datetime import datetime, timezone
-from pi_web_sdk.omf import (
+from pi_web_sdk.models.omf import (
     OMFType, OMFProperty, OMFContainer, OMFAsset, OMFTimeSeriesData, OMFBatch,
-    OMFManager, Classification, PropertyType, OMFAction, OMFMessageType,
+    Classification, PropertyType, OMFAction, OMFMessageType,
     create_temperature_sensor_type, create_equipment_asset_type
 )
+from pi_web_sdk.controllers.omf import OMFManager
 
 
 class TestOMFProperty:
